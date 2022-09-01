@@ -23,6 +23,11 @@ if (process.env.NODE_ENV === 'development') {
 // Mount Routes
 app.use('/api/v1/categories', categoryRoute);
 
+// Global error handling middleware ,
+// when there is 4 parameters express know error middleware
+app.use((err,req,res,next)=>{
+  res.status(400).json({error:err});
+})
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`App running running on port ${PORT}`);
