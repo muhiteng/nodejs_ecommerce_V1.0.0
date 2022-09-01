@@ -34,6 +34,19 @@ app.all("*",(req,res,next)=>{
 // when there is 4 parameters express know error middleware
 app.use(globalError);
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+const server=app.listen(PORT, () => {
   console.log(`App running running on port ${PORT}`);
+});
+
+// lisen any error out express
+process.on("unhandledRejection",(err)=>{
+  console.error(`UnhandledRejection Error: ${err.name}| ${err.message}`);
+  //close server
+  server.close(()=>{
+    console.error('shutting down.....');
+     //shutdown application
+  process.exit(1);
+  })
+ 
+
 });
