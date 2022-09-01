@@ -2,7 +2,6 @@ const slugify = require('slugify');
 const asyncHandler = require('express-async-handler');
 const CategoryModel = require('../models/categoryModel');
   const apiError=require('../utils/apiError');
-
 // @des get all categories
 // @route  GET api/v1/categories
 // @access public
