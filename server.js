@@ -5,6 +5,7 @@ const morgan = require('morgan');
 dotenv.config({ path: 'config.env' });
 const dbConnection = require('./config/database');
 const categoryRoute = require('./routes/categoryRoute');
+const { Error } = require('mongoose');
 
 // Connect with db
 dbConnection();
@@ -23,6 +24,10 @@ if (process.env.NODE_ENV === 'development') {
 // Mount Routes
 app.use('/api/v1/categories', categoryRoute);
 
+app.all("*",(req,res,next)=>{
+  const err=new Error(`rout not found : ${req.originalUrl}`);
+  next(err.message);
+})
 // Global error handling middleware ,
 // when there is 4 parameters express know error middleware
 app.use((err,req,res,next)=>{
