@@ -1,6 +1,7 @@
 const slugify = require('slugify');
 const asyncHandler = require('express-async-handler');
 const CategoryModel = require('../models/categoryModel');
+  const apiError=require('../utils/apiError');
 
 // @des get all categories
 // @route  GET api/v1/categories
@@ -18,12 +19,13 @@ exports.getCategories =asyncHandler(  async (req, res) => {
 // @des get  category by id
 // @route  GET api/v1/categories/:id
 // @access public
-exports.getCategory=asyncHandler(async (req,res)=>{
+exports.getCategory=asyncHandler(async (req,res,next)=>{
 
  const id=req.params.id;  //or const {id}=req.params;
  const category=await CategoryModel.findById(id); 
  if(!category){
-   res.status(404).json({message:`No category for this id :${id}`});
+  // res.status(404).json({message:`No category for this id :${id}`});
+  return next(new apiError(`No category for this id :${id}`,404));
    
  }
    
@@ -45,15 +47,15 @@ async (req,res)=>{
 // @des post  update category
 // @route  POST api/v1/categories/:id
 // @access private
-exports.updateCategory=asyncHandler(async (req,res)=>{
+exports.updateCategory=asyncHandler(async (req,res,next)=>{
 
    const {id}=req.params;
    const {name}=req.body;
    
   const category=await CategoryModel.findOneAndUpdate({_id:id},{name:name,slug:slugify(name)},{new:true});// new to return category after update); 
   if(!category){
-    res.status(404).json({message:`No category for this id :${id}`});
-    
+    //res.status(404).json({message:`No category for this id :${id}`});
+    return next(new apiError(`No category for this id :${id}`,404));
   }
     
    res.status(200).json({data:category});
@@ -62,15 +64,15 @@ exports.updateCategory=asyncHandler(async (req,res)=>{
  // @des delete  delete category
 // @route  DELETE api/v1/categories/:id
 // @access private
-exports.deleteCategory=asyncHandler(async (req,res)=>{
+exports.deleteCategory=asyncHandler(async (req,res,next)=>{
 
   const {id}=req.params;
   
   
  const category=await CategoryModel.findByIdAndDelete(id);
  if(!category){
-   res.status(404).json({message:`No category for this id :${id}`});
-   
+  // res.status(404).json({message:`No category for this id :${id}`});
+  return next(new apiError(`No category for this id :${id}`,404));
  }
    
   res.status(204).send();

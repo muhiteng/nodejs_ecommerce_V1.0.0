@@ -1,11 +1,12 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
-
+const apiError=require('./utils/apiError');
 dotenv.config({ path: 'config.env' });
 const dbConnection = require('./config/database');
 const categoryRoute = require('./routes/categoryRoute');
-const { Error } = require('mongoose');
+const globalError=require('./middlewares/errorMiddleware');
+
 
 // Connect with db
 dbConnection();
@@ -25,14 +26,13 @@ if (process.env.NODE_ENV === 'development') {
 app.use('/api/v1/categories', categoryRoute);
 
 app.all("*",(req,res,next)=>{
-  const err=new Error(`rout not found : ${req.originalUrl}`);
-  next(err.message);
+  // const err=new Error(`rout not found : ${req.originalUrl}`);
+  // next(err.message);
+  next(new apiError(`rout not found : ${req.originalUrl}`,401))
 })
 // Global error handling middleware ,
 // when there is 4 parameters express know error middleware
-app.use((err,req,res,next)=>{
-  res.status(400).json({error:err});
-})
+app.use(globalError);
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`App running running on port ${PORT}`);
