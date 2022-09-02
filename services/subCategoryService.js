@@ -24,8 +24,12 @@ exports.getSubCategories = asyncHandler(async (req, res) => {
   const limit = req.query.limit * 1 || 5;
   const skip = (page - 1) * limit;
 
+  // if nested route
+  let filterObject = {};
+  if (req.params.categoryId) filterObject = { category: req.params.categoryId };
+
   const subCategories = await subCategoryModel
-    .find({})
+    .find(filterObject)
     .skip(skip)
     .limit(limit)
     //populate do another separate query, so dont use if needed
