@@ -3,6 +3,7 @@ const express = require('express');
 
 const { getCategories ,createCategory,getCategory,updateCategory,deleteCategory} = require('../services/categoryService');
 const {getCategoryValidator,createCategoryValidator,updateCategoryValidator,deleteCategoryValidator}=require("../utils/validators/categoryValidator")
+
 const router = express.Router();
 
 //router.get('/', getCategories);
