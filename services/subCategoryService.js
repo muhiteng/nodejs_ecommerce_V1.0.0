@@ -3,11 +3,18 @@ const asyncHandler = require("express-async-handler");
 const subCategoryModel = require("../models/subCategoryModel");
 const apiError = require("../utils/apiError");
 
+exports.setCategoryIdToBody = (req, res, next) => {
+  // nested rout from category to sub , if category not send in bode take it from param
+  if (!req.body.category) req.body.category = req.params.categoryId;
+  next();
+};
+
 // @des create new subcategory
 // @route  POST api/v1/subcategories
 // @access private
 exports.createSubCategory = asyncHandler(async (req, res) => {
   const { name, category } = req.body;
+
   const subCategory = await subCategoryModel.create({
     name,
     slug: slugify(name),
@@ -16,6 +23,14 @@ exports.createSubCategory = asyncHandler(async (req, res) => {
   res.status(201).send(subCategory);
 });
 
+exports.createFilterObj = (req, res, next) => {
+  // if nested route
+  let filterObject = {};
+  if (req.params.categoryId) filterObject = { category: req.params.categoryId };
+  // add new value to req
+  req.filterObject = filterObject;
+  next();
+};
 // @des get all subCategories
 // @route  GET api/v1/subcategories
 // @access public
@@ -24,12 +39,8 @@ exports.getSubCategories = asyncHandler(async (req, res) => {
   const limit = req.query.limit * 1 || 5;
   const skip = (page - 1) * limit;
 
-  // if nested route
-  let filterObject = {};
-  if (req.params.categoryId) filterObject = { category: req.params.categoryId };
-
   const subCategories = await subCategoryModel
-    .find(filterObject)
+    .find(req.filterObject)
     .skip(skip)
     .limit(limit)
     //populate do another separate query, so dont use if needed
