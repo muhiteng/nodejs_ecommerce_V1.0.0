@@ -24,7 +24,13 @@ exports.getSubCategories = asyncHandler(async (req, res) => {
   const limit = req.query.limit * 1 || 5;
   const skip = (page - 1) * limit;
 
-  const subCategories = await subCategoryModel.find({}).skip(skip).limit(limit);
+  const subCategories = await subCategoryModel
+    .find({})
+    .skip(skip)
+    .limit(limit)
+    //populate do another separate query, so dont use if needed
+    //.populate("category"); // name of ref to  get all fields of documents relatied by ref model
+    .populate({ path: "category", select: "name -_id" }); // return only name  , -_id to remove id
   res
     .status(200)
     .json({ results: subCategories.length, page, data: subCategories });
@@ -35,7 +41,11 @@ exports.getSubCategories = asyncHandler(async (req, res) => {
 // @access public
 exports.getSubCategory = asyncHandler(async (req, res, next) => {
   const { id } = req.params; //or const {id}=req.params;
-  const subCategory = await subCategoryModel.findById(id);
+  const subCategory = await subCategoryModel
+    .findById(id)
+    //populate do another separate query
+    //.populate("category"); // name of ref to  get all fields of documents relatied by ref model
+    .populate({ path: "category", select: "name -_id" }); // return only name  , -_id to remove id;
   if (!subCategory) {
     // res.status(404).json({message:`No category for this id :${id}`});
     return next(new apiError(`No category for this id :${id}`, 404));
