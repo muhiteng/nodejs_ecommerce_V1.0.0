@@ -67,6 +67,16 @@ exports.getProducts = asyncHandler(async (req, res) => {
     // all fields except __v with return from mongoose
     mongooseQuery = mongooseQuery.select("-__v");
   }
+  // 5) search
+  if (req.query.keyword) {
+    const query = {};
+    query.$or=[
+      // use option i to make car ==Car==CAR same thing
+      { title: { $regex: req.query.keyword ,$options:'i' } },
+      { description: { $regex: req.query.keyword ,$options:'i'} },
+    ];
+    mongooseQuery = mongooseQuery.find(query);
+  }
   // execute query
   const products = await mongooseQuery;
 
