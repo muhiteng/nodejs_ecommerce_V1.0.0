@@ -43,7 +43,7 @@ exports.getProducts = asyncHandler(async (req, res) => {
   // for ASE sort use in query string ex: sort=price , for many sort : sort=price,sold
   // for DESC sort use in query string ex: sort=-price, for many sort : sort=price,-sold
   if (req.query.sort) {
-    // in mongo for many sort use  mongoose.sort('price sold)
+    // in mongo for many sort use  mongoose.sort('price sold')
     // split query by comma   ex : price,sold => [price,sold]
     // join by comma ex:  [price,sold] => price sold
     const sortBy = req.query.sort.split(",").join(" ");
@@ -52,6 +52,20 @@ exports.getProducts = asyncHandler(async (req, res) => {
   } else {
     // if not there is query string sort then sort by recent products  createAt DESC
     mongooseQuery = mongooseQuery.sort("-createAt");
+  }
+
+  //4) fields limiting
+  // return only title,image,price ex:  http://localhost:4000/api/v1/products?fields=title,image,price
+  // return all except price ex:  http://localhost:4000/api/v1/products?fields=-price
+  if (req.query.fields) {
+    // in mongo for specific select use  mongoose.select(' titleprice')
+    // split query by comma   ex :title, price => [title, price]
+    // join by comma ex:  [title,price] => title price
+    const fields = req.query.fields.split(",").join(" ");
+    mongooseQuery = mongooseQuery.select(fields);
+  } else {
+    // all fields except __v with return from mongoose
+    mongooseQuery = mongooseQuery.select("-__v");
   }
   // execute query
   const products = await mongooseQuery;
