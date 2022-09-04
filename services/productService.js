@@ -9,6 +9,7 @@ const apiError = require("../utils/apiError");
 // @access public
 exports.getProducts = asyncHandler(async (req, res) => {
   //1) filtering
+  //ex: http://localhost:4000/api/v1/products?ratingsAverage=4.4
   // to take a copy of req.query not reference in(const queryStringObject=req.query;)
   const queryStringObject = { ...req.query };
   const excludesFields = ["page", "limit", "sort", "fields"];
@@ -16,9 +17,10 @@ exports.getProducts = asyncHandler(async (req, res) => {
   //console.log(req.query);
   //console.log(queryStringObject);
 
+  //ex: http://localhost:4000/api/v1/products?ratingsAverage[lte]=4.4
   //applay filtering using [gte,gt,lte,lt]
-  //object in mongo : {price:{$gte:4},ratingsAverage:{$gte:200}} means greater than or equal 
-  //object in mongo : {price:{$lte:4},ratingsAverage:{$lte:200}} means less than or equal 
+  //object in mongo : {price:{$gte:4},ratingsAverage:{$gte:200}} means greater than or equal
+  //object in mongo : {price:{$lte:4},ratingsAverage:{$lte:200}} means less than or equal
   //parameter in postman :  ratingsAverage[gte] result of it : {price:{gte:4},ratingsAverage:{gte:200}}
   // so we replace gte with $gte and for others
   //  JSON.stringify : convert object to string, convert string to object : JSON.parse()
@@ -31,12 +33,26 @@ exports.getProducts = asyncHandler(async (req, res) => {
   const skip = (page - 1) * limit;
 
   // build query
-  const mongooseQuery = productModel
+  let mongooseQuery = productModel
     .find(JSON.parse(queryStr))
     .skip(skip)
     .limit(limit)
     .populate({ path: "category", select: "name -_id" }); // return only name  , -_id to remove id;
+  //3) sorting
+  // ex: http://localhost:4000/api/v1/products?sort=-price,sold
+  // for ASE sort use in query string ex: sort=price , for many sort : sort=price,sold
+  // for DESC sort use in query string ex: sort=-price, for many sort : sort=price,-sold
+  if (req.query.sort) {
+    // in mongo for many sort use  mongoose.sort('price sold)
+    // split query by comma   ex : price,sold => [price,sold]
+    // join by comma ex:  [price,sold] => price sold
+    const sortBy = req.query.sort.split(",").join(" ");
 
+    mongooseQuery = mongooseQuery.sort(sortBy);
+  } else {
+    // if not there is query string sort then sort by recent products  createAt DESC
+    mongooseQuery = mongooseQuery.sort("-createAt");
+  }
   // execute query
   const products = await mongooseQuery;
 
