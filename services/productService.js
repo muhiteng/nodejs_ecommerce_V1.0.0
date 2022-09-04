@@ -15,6 +15,16 @@ exports.getProducts = asyncHandler(async (req, res) => {
   excludesFields.forEach((field) => delete queryStringObject[field]);
   //console.log(req.query);
   //console.log(queryStringObject);
+
+  //applay filtering using [gte,gt,lte,lt]
+  //object in mongo : {price:{$gte:4},ratingsAverage:{$gte:200}} means greater than or equal 
+  //object in mongo : {price:{$lte:4},ratingsAverage:{$lte:200}} means less than or equal 
+  //parameter in postman :  ratingsAverage[gte] result of it : {price:{gte:4},ratingsAverage:{gte:200}}
+  // so we replace gte with $gte and for others
+  //  JSON.stringify : convert object to string, convert string to object : JSON.parse()
+  let queryStr = JSON.stringify(queryStringObject);
+  // reqular expression if there is exactly use :(\b   \b) gte,gt,lte,lt   then use :   g means if more than one value
+  queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
   //2) paggination
   const page = req.query.page * 1 || 1;
   const limit = req.query.limit * 1 || 5;
@@ -22,7 +32,7 @@ exports.getProducts = asyncHandler(async (req, res) => {
 
   // build query
   const mongooseQuery = productModel
-    .find(queryStringObject)
+    .find(JSON.parse(queryStr))
     .skip(skip)
     .limit(limit)
     .populate({ path: "category", select: "name -_id" }); // return only name  , -_id to remove id;
