@@ -83,7 +83,7 @@ exports.createProductValidator = [
           }
         }
       )
-    )
+    ) 
     .custom((val, { req }) =>
       SubCategory.find({ category: req.body.category }).then(
         (subcategories) => {

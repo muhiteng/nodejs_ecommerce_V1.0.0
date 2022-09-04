@@ -8,15 +8,29 @@ const apiError = require("../utils/apiError");
 // @route  GET api/v1/products
 // @access public
 exports.getProducts = asyncHandler(async (req, res) => {
+  //1) filtering
+  // to take a copy of req.query not reference in(const queryStringObject=req.query;)
+  const queryStringObject = { ...req.query };
+  const excludesFields = ["page", "limit", "sort", "fields"];
+  excludesFields.forEach((field) => delete queryStringObject[field]);
+  //console.log(req.query);
+  //console.log(queryStringObject);
+  //2) paggination
   const page = req.query.page * 1 || 1;
   const limit = req.query.limit * 1 || 5;
   const skip = (page - 1) * limit;
 
-  const products = await productModel
-    .find({})
+  // build query
+  const mongooseQuery = productModel
+    .find(queryStringObject)
     .skip(skip)
     .limit(limit)
     .populate({ path: "category", select: "name -_id" }); // return only name  , -_id to remove id;
+
+  // execute query
+  const products = await mongooseQuery;
+
+  // return response
   res.status(200).json({ results: products.length, page, data: products });
 });
 
@@ -39,6 +53,7 @@ exports.getProduct = asyncHandler(async (req, res, next) => {
 // @access private
 exports.createProduct = asyncHandler(async (req, res) => {
   req.body.slug = slugify(req.body.title);
+  req.body.category;
   const product = await productModel.create(req.body);
   res.status(201).send(product);
 });
