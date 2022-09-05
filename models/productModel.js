@@ -69,6 +69,14 @@ const productSchema = new mongoose.Schema(
   },
   {}
 );
+// use mongoose  query middleware
+productSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "category",
+    select: "name -_id",
+  });
+  next();
+});
 // 2- Create model
 const productModel = mongoose.model("Product", productSchema);
 
