@@ -13,3 +13,20 @@ exports.deleteOne = (Model) => asyncHandler(async (req, res, next) => {
   
     res.status(204).send();
   });
+
+  exports.updateOne=(Model)=>asyncHandler(async (req, res, next) => {
+  
+    const { name } = req.body;
+  
+    const document = await Model.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    ); // new to return brand after update);
+    if (!document) {
+      
+      return next(new apiError(`No result for this id :${id}`, 404));
+    }
+  
+    res.status(200).json({ data: document });
+  });

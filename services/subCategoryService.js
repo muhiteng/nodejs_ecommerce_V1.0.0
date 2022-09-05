@@ -84,22 +84,23 @@ exports.getSubCategory = asyncHandler(async (req, res, next) => {
 // @des post  update category
 // @route  POST api/v1/categories/:id
 // @access private
-exports.updateSubCategory = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
-  const { name, category } = req.body;
+exports.updateSubCategory = factory.updateOne(subCategoryModel);
+// exports.updateSubCategory = asyncHandler(async (req, res, next) => {
+//   const { id } = req.params;
+//   const { name, category } = req.body;
 
-  const subCategory = await subCategoryModel.findOneAndUpdate(
-    { _id: id },
-    { name: name, slug: slugify(name), category: category },
-    { new: true }
-  ); // new to return category after update);
-  if (!subCategory) {
-    //res.status(404).json({message:`No category for this id :${id}`});
-    return next(new apiError(`No category for this id :${id}`, 404));
-  }
+//   const subCategory = await subCategoryModel.findOneAndUpdate(
+//     { _id: id },
+//     { name: name, slug: slugify(name), category: category },
+//     { new: true }
+//   ); // new to return category after update);
+//   if (!subCategory) {
+//     //res.status(404).json({message:`No category for this id :${id}`});
+//     return next(new apiError(`No category for this id :${id}`, 404));
+//   }
 
-  res.status(200).json({ data: subCategory });
-});
+//   res.status(200).json({ data: subCategory });
+// });
 
 // @des delete  delete sub category
 // @route  DELETE api/v1/subcategories/:id

@@ -57,22 +57,23 @@ exports.createCategory = asyncHandler(async (req, res) => {
 // @des post  update category
 // @route  POST api/v1/categories/:id
 // @access private
-exports.updateCategory = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
-  const { name } = req.body;
+exports.updateCategory = factory.updateOne(CategoryModel);
+// exports.updateCategory = asyncHandler(async (req, res, next) => {
+//   const { id } = req.params;
+//   const { name } = req.body;
 
-  const category = await CategoryModel.findOneAndUpdate(
-    { _id: id },
-    { name: name, slug: slugify(name) },
-    { new: true }
-  ); // new to return category after update);
-  if (!category) {
-    //res.status(404).json({message:`No category for this id :${id}`});
-    return next(new apiError(`No category for this id :${id}`, 404));
-  }
+//   const category = await CategoryModel.findOneAndUpdate(
+//     { _id: id },
+//     { name: name, slug: slugify(name) },
+//     { new: true }
+//   ); // new to return category after update);
+//   if (!category) {
+//     //res.status(404).json({message:`No category for this id :${id}`});
+//     return next(new apiError(`No category for this id :${id}`, 404));
+//   }
 
-  res.status(200).json({ data: category });
-});
+//   res.status(200).json({ data: category });
+// });
 
 // @des delete  delete category
 // @route  DELETE api/v1/categories/:id

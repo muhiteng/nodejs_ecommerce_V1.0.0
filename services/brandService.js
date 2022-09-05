@@ -57,22 +57,39 @@ exports.createBrand = asyncHandler(async (req, res) => {
 // @des post  update brand
 // @route  POST api/v1/brands/:id
 // @access private
-exports.updateBrand = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
-  const { name } = req.body;
+exports.updateBrand = factory.updateOne(brandModel);
+// exports.updateBrand = asyncHandler(async (req, res, next) => {
 
-  const brand = await brandModel.findOneAndUpdate(
-    { _id: id },
-    { name: name, slug: slugify(name) },
-    { new: true }
-  ); // new to return brand after update);
-  if (!brand) {
-    //res.status(404).json({message:`No brand for this id :${id}`});
-    return next(new apiError(`No brand for this id :${id}`, 404));
-  }
+//   const { name } = req.body;
 
-  res.status(200).json({ data: brand });
-});
+//   const brand = await brandModel.findByIdAndUpdate(
+//     req.params.id,
+//     req.body,
+//     { new: true }
+//   ); // new to return brand after update);
+//   if (!brand) {
+//     //res.status(404).json({message:`No brand for this id :${id}`});
+//     return next(new apiError(`No brand for this id :${id}`, 404));
+//   }
+
+//   res.status(200).json({ data: brand });
+// });
+// exports.updateBrand = asyncHandler(async (req, res, next) => {
+//   const { id } = req.params;
+//   const { name } = req.body;
+
+//   const brand = await brandModel.findOneAndUpdate(
+//     { _id: id },
+//     { name: name, slug: slugify(name) },
+//     { new: true }
+//   ); // new to return brand after update);
+//   if (!brand) {
+//     //res.status(404).json({message:`No brand for this id :${id}`});
+//     return next(new apiError(`No brand for this id :${id}`, 404));
+//   }
+
+//   res.status(200).json({ data: brand });
+// });
 
 // @des delete  delete brand
 // @route  DELETE api/v1/brands/:id

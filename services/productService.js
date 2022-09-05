@@ -128,20 +128,21 @@ exports.createProduct = asyncHandler(async (req, res) => {
 // @des post  update product
 // @route  POST api/v1/products/:id
 // @access private
-exports.updateProduct = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
-  if (req.body.title) req.body.slug = slugify(req.body.title);
+exports.updateProduct = factory.updateOne(productModel);
+// exports.updateProduct = asyncHandler(async (req, res, next) => {
+//   const { id } = req.params;
+//   if (req.body.title) req.body.slug = slugify(req.body.title);
 
-  const product = await productModel.findOneAndUpdate({ _id: id }, req.body, {
-    new: true,
-  }); // new to return product after update);
-  if (!product) {
-    //res.status(404).json({message:`No product for this id :${id}`});
-    return next(new apiError(`No product for this id :${id}`, 404));
-  }
+//   const product = await productModel.findOneAndUpdate({ _id: id }, req.body, {
+//     new: true,
+//   }); // new to return product after update);
+//   if (!product) {
+//     //res.status(404).json({message:`No product for this id :${id}`});
+//     return next(new apiError(`No product for this id :${id}`, 404));
+//   }
 
-  res.status(200).json({ data: product });
-});
+//   res.status(200).json({ data: product });
+// });
 
 // @des delete  delete product
 // @route  DELETE api/v1/products/:id
