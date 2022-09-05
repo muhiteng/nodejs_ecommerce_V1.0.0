@@ -3,6 +3,8 @@ const asyncHandler = require("express-async-handler");
 const brandModel = require("../models/brandModel");
 const apiError = require("../utils/apiError");
 const ApiFeatures = require("../utils/apiFeatures");
+const factory = require("./handlersFactory");
+
 // @des get all brands
 // @route  GET api/v1/brands
 // @access public
@@ -75,14 +77,15 @@ exports.updateBrand = asyncHandler(async (req, res, next) => {
 // @des delete  delete brand
 // @route  DELETE api/v1/brands/:id
 // @access private
-exports.deleteBrand = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
+exports.deleteBrand = factory.deleteOne(brandModel);
+// exports.deleteBrand = asyncHandler(async (req, res, next) => {
+//   const { id } = req.params;
 
-  const brand = await brandModel.findByIdAndDelete(id);
-  if (!brand) {
-    // res.status(404).json({message:`No brand for this id :${id}`});
-    return next(new apiError(`No brand for this id :${id}`, 404));
-  }
+//   const brand = await brandModel.findByIdAndDelete(id);
+//   if (!brand) {
+//     // res.status(404).json({message:`No brand for this id :${id}`});
+//     return next(new apiError(`No brand for this id :${id}`, 404));
+//   }
 
-  res.status(204).send();
-});
+//   res.status(204).send();
+// });

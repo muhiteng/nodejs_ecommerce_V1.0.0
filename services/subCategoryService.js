@@ -3,6 +3,7 @@ const asyncHandler = require("express-async-handler");
 const subCategoryModel = require("../models/subCategoryModel");
 const apiError = require("../utils/apiError");
 const ApiFeatures = require("../utils/apiFeatures");
+const factory = require("./handlersFactory");
 
 exports.setCategoryIdToBody = (req, res, next) => {
   // nested rout from category to sub , if category not send in bode take it from param
@@ -55,13 +56,11 @@ exports.getSubCategories = asyncHandler(async (req, res) => {
     path: "category",
     select: "name -_id",
   }); // return only name  , -_id to remove id
-  res
-    .status(200)
-    .json({
-      results: subCategories.length,
-      paginationResult,
-      data: subCategories,
-    });
+  res.status(200).json({
+    results: subCategories.length,
+    paginationResult,
+    data: subCategories,
+  });
 });
 
 // @des get  category by id
@@ -105,14 +104,15 @@ exports.updateSubCategory = asyncHandler(async (req, res, next) => {
 // @des delete  delete sub category
 // @route  DELETE api/v1/subcategories/:id
 // @access private
-exports.deleteSubCategory = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
+exports.deleteSubCategory = factory.deleteOne(subCategoryModel);
+// exports.deleteSubCategory = asyncHandler(async (req, res, next) => {
+//   const { id } = req.params;
 
-  const subCategory = await subCategoryModel.findByIdAndDelete(id);
-  if (!subCategory) {
-    // res.status(404).json({message:`No category for this id :${id}`});
-    return next(new apiError(`No category for this id :${id}`, 404));
-  }
+//   const subCategory = await subCategoryModel.findByIdAndDelete(id);
+//   if (!subCategory) {
+//     // res.status(404).json({message:`No category for this id :${id}`});
+//     return next(new apiError(`No category for this id :${id}`, 404));
+//   }
 
-  res.status(204).send();
-});
+//   res.status(204).send();
+// });

@@ -3,6 +3,7 @@ const asyncHandler = require("express-async-handler");
 const CategoryModel = require("../models/categoryModel");
 const apiError = require("../utils/apiError");
 const ApiFeatures = require("../utils/apiFeatures");
+const factory = require("./handlersFactory");
 
 // @des get all categories
 // @route  GET api/v1/categories
@@ -76,14 +77,15 @@ exports.updateCategory = asyncHandler(async (req, res, next) => {
 // @des delete  delete category
 // @route  DELETE api/v1/categories/:id
 // @access private
-exports.deleteCategory = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
+exports.deleteCategory = factory.deleteOne(CategoryModel);
+// exports.deleteCategory = asyncHandler(async (req, res, next) => {
+//   const { id } = req.params;
 
-  const category = await CategoryModel.findByIdAndDelete(id);
-  if (!category) {
-    // res.status(404).json({message:`No category for this id :${id}`});
-    return next(new apiError(`No category for this id :${id}`, 404));
-  }
+//   const category = await CategoryModel.findByIdAndDelete(id);
+//   if (!category) {
+//     // res.status(404).json({message:`No category for this id :${id}`});
+//     return next(new apiError(`No category for this id :${id}`, 404));
+//   }
 
-  res.status(204).send();
-});
+//   res.status(204).send();
+// });

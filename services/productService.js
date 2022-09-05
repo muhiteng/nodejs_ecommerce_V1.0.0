@@ -4,6 +4,8 @@ const productModel = require("../models/productModel");
 
 const apiError = require("../utils/apiError");
 const ApiFeatures = require("../utils/apiFeatures");
+const factory = require("./handlersFactory");
+
 // @des get all products
 // @route  GET api/v1/products
 // @access public
@@ -144,14 +146,15 @@ exports.updateProduct = asyncHandler(async (req, res, next) => {
 // @des delete  delete product
 // @route  DELETE api/v1/products/:id
 // @access private
-exports.deleteProduct = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
+exports.deleteProduct = factory.deleteOne(productModel);
+// exports.deleteProduct = asyncHandler(async (req, res, next) => {
+//   const { id } = req.params;
 
-  const product = await productModel.findByIdAndDelete(id);
-  if (!product) {
-    // res.status(404).json({message:`No product for this id :${id}`});
-    return next(new apiError(`No product for this id :${id}`, 404));
-  }
+//   const product = await productModel.findByIdAndDelete(id);
+//   if (!product) {
+//     // res.status(404).json({message:`No product for this id :${id}`});
+//     return next(new apiError(`No product for this id :${id}`, 404));
+//   }
 
-  res.status(204).send();
-});
+//   res.status(204).send();
+// });
