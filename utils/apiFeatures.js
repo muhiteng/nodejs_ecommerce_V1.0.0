@@ -64,15 +64,20 @@ class ApiFeatures {
     // return the object to use another method
     return this;
   }
-  search() {
+  search(modelName) {
     // 5) search
     if (this.queryString.keyword) {
-      const query = {};
-      query.$or = [
-        // use option i to make car ==Car==CAR same thing
-        { title: { $regex: this.queryString.keyword, $options: "i" } },
-        { description: { $regex: this.queryString.keyword, $options: "i" } },
-      ];
+      let query = {};
+      if (modelName === "Products") {
+        query.$or = [
+          // use option i to make car ==Car==CAR same thing
+          { title: { $regex: this.queryString.keyword, $options: "i" } },
+          { description: { $regex: this.queryString.keyword, $options: "i" } },
+        ];
+      } else {
+        query = { name: { $regex: this.queryString.keyword, $options: "i" } };
+      }
+
       this.mongooseQuery = this.mongooseQuery.find(query);
     }
     // return the object to use another method

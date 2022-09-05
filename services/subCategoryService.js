@@ -2,6 +2,7 @@ const slugify = require("slugify");
 const asyncHandler = require("express-async-handler");
 const subCategoryModel = require("../models/subCategoryModel");
 const apiError = require("../utils/apiError");
+const ApiFeatures = require("../utils/apiFeatures");
 
 exports.setCategoryIdToBody = (req, res, next) => {
   // nested rout from category to sub , if category not send in bode take it from param
@@ -35,20 +36,32 @@ exports.createFilterObj = (req, res, next) => {
 // @route  GET api/v1/subcategories
 // @access public
 exports.getSubCategories = asyncHandler(async (req, res) => {
-  const page = req.query.page * 1 || 1;
-  const limit = req.query.limit * 1 || 5;
-  const skip = (page - 1) * limit;
+  // get total number of brands
+  const documentsCounts = await subCategoryModel.countDocuments();
 
-  const subCategories = await subCategoryModel
-    .find(req.filterObject)
-    .skip(skip)
-    .limit(limit)
-    //populate do another separate query, so dont use if needed
-    //.populate("category"); // name of ref to  get all fields of documents relatied by ref model
-    .populate({ path: "category", select: "name -_id" }); // return only name  , -_id to remove id
+  //Build query
+  const apiFeatures = new ApiFeatures(subCategoryModel.find(), req.query)
+    .paginate(documentsCounts)
+    .filter()
+    .search()
+    .limitFields()
+    .sort();
+
+  //execute query
+  const { mongooseQuery, paginationResult } = apiFeatures;
+  // const products = await apiFeatures.mongooseQuery;
+
+  const subCategories = await mongooseQuery.populate({
+    path: "category",
+    select: "name -_id",
+  }); // return only name  , -_id to remove id
   res
     .status(200)
-    .json({ results: subCategories.length, page, data: subCategories });
+    .json({
+      results: subCategories.length,
+      paginationResult,
+      data: subCategories,
+    });
 });
 
 // @des get  category by id
