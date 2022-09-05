@@ -34,16 +34,17 @@ exports.getBrands = asyncHandler(async (req, res) => {
 // @des get  brand by id
 // @route  GET api/v1/brands/:id
 // @access public
-exports.getBrand = asyncHandler(async (req, res, next) => {
-  const { id } = req.params; //or const {id}=req.params;
-  const brand = await brandModel.findById(id);
-  if (!brand) {
-    // res.status(404).json({message:`No brand for this id :${id}`});
-    return next(new apiError(`No brand for this id :${id}`, 404));
-  }
+exports.getBrand = factory.getOne(brandModel);
+// exports.getBrand = asyncHandler(async (req, res, next) => {
+//   const { id } = req.params; //or const {id}=req.params;
+//   const brand = await brandModel.findById(id);
+//   if (!brand) {
+//     // res.status(404).json({message:`No brand for this id :${id}`});
+//     return next(new apiError(`No brand for this id :${id}`, 404));
+//   }
 
-  res.status(200).json({ data: brand });
-});
+//   res.status(200).json({ data: brand });
+// });
 
 // @des create new brand
 // @route  POST api/v1/brands

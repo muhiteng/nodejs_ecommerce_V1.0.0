@@ -104,16 +104,17 @@ exports.getProducts = asyncHandler(async (req, res) => {
 // @des get  product by id
 // @route  GET api/v1/products/:id
 // @access public
-exports.getProduct = asyncHandler(async (req, res, next) => {
-  const { id } = req.params; //or const {id}=req.params;
-  const product = await productModel.findById(id);
-  if (!product) {
-    // res.status(404).json({message:`No product for this id :${id}`});
-    return next(new apiError(`No product for this id :${id}`, 404));
-  }
+exports.getProduct = factory.getOne(productModel);
+// exports.getProduct = asyncHandler(async (req, res, next) => {
+//   const { id } = req.params; //or const {id}=req.params;
+//   const product = await productModel.findById(id);
+//   if (!product) {
+//     // res.status(404).json({message:`No product for this id :${id}`});
+//     return next(new apiError(`No product for this id :${id}`, 404));
+//   }
 
-  res.status(200).json({ data: product });
-});
+//   res.status(200).json({ data: product });
+// });
 
 // @des create new product
 // @route  POST api/v1/products

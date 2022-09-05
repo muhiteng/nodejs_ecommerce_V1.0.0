@@ -34,16 +34,17 @@ exports.getCategories = asyncHandler(async (req, res) => {
 // @des get  category by id
 // @route  GET api/v1/categories/:id
 // @access public
-exports.getCategory = asyncHandler(async (req, res, next) => {
-  const { id } = req.params; //or const {id}=req.params;
-  const category = await CategoryModel.findById(id);
-  if (!category) {
-    // res.status(404).json({message:`No category for this id :${id}`});
-    return next(new apiError(`No category for this id :${id}`, 404));
-  }
+exports.getCategory = factory.getOne(CategoryModel);
+// exports.getCategory = asyncHandler(async (req, res, next) => {
+//   const { id } = req.params; //or const {id}=req.params;
+//   const category = await CategoryModel.findById(id);
+//   if (!category) {
+//     // res.status(404).json({message:`No category for this id :${id}`});
+//     return next(new apiError(`No category for this id :${id}`, 404));
+//   }
 
-  res.status(200).json({ data: category });
-});
+//   res.status(200).json({ data: category });
+// });
 
 // @des create new category
 // @route  POST api/v1/categories

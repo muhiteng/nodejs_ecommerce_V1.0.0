@@ -67,20 +67,21 @@ exports.getSubCategories = asyncHandler(async (req, res) => {
 // @des get  category by id
 // @route  GET api/v1/categories/:id
 // @access public
-exports.getSubCategory = asyncHandler(async (req, res, next) => {
-  const { id } = req.params; //or const {id}=req.params;
-  const subCategory = await subCategoryModel
-    .findById(id)
-    //populate do another separate query
-    //.populate("category"); // name of ref to  get all fields of documents relatied by ref model
-    .populate({ path: "category", select: "name -_id" }); // return only name  , -_id to remove id;
-  if (!subCategory) {
-    // res.status(404).json({message:`No category for this id :${id}`});
-    return next(new apiError(`No category for this id :${id}`, 404));
-  }
+exports.getSubCategory = factory.getOne(subCategoryModel);
+// exports.getSubCategory = asyncHandler(async (req, res, next) => {
+//   const { id } = req.params; //or const {id}=req.params;
+//   const subCategory = await subCategoryModel
+//     .findById(id)
+//     //populate do another separate query
+//     //.populate("category"); // name of ref to  get all fields of documents relatied by ref model
+//     .populate({ path: "category", select: "name -_id" }); // return only name  , -_id to remove id;
+//   if (!subCategory) {
+//     // res.status(404).json({message:`No category for this id :${id}`});
+//     return next(new apiError(`No category for this id :${id}`, 404));
+//   }
 
-  res.status(200).json({ data: subCategory });
-});
+//   res.status(200).json({ data: subCategory });
+// });
 
 // @des post  update category
 // @route  POST api/v1/categories/:id
