@@ -118,12 +118,13 @@ exports.getProduct = asyncHandler(async (req, res, next) => {
 // @des create new product
 // @route  POST api/v1/products
 // @access private
-exports.createProduct = asyncHandler(async (req, res) => {
-  req.body.slug = slugify(req.body.title);
-  req.body.category;
-  const product = await productModel.create(req.body);
-  res.status(201).send(product);
-});
+exports.createProduct = factory.createOne(productModel);
+// exports.createProduct = asyncHandler(async (req, res) => {
+//   req.body.slug = slugify(req.body.title);
+//   req.body.category;
+//   const product = await productModel.create(req.body);
+//   res.status(201).send(product);
+// });
 
 // @des post  update product
 // @route  POST api/v1/products/:id

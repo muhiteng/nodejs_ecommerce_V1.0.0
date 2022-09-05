@@ -14,16 +14,17 @@ exports.setCategoryIdToBody = (req, res, next) => {
 // @des create new subcategory
 // @route  POST api/v1/subcategories
 // @access private
-exports.createSubCategory = asyncHandler(async (req, res) => {
-  const { name, category } = req.body;
+exports.createSubCategory = factory.createOne(subCategoryModel);
+// exports.createSubCategory = asyncHandler(async (req, res) => {
+//   const { name, category } = req.body;
 
-  const subCategory = await subCategoryModel.create({
-    name,
-    slug: slugify(name),
-    category,
-  });
-  res.status(201).send(subCategory);
-});
+//   const subCategory = await subCategoryModel.create({
+//     name,
+//     slug: slugify(name),
+//     category,
+//   });
+//   res.status(201).send(subCategory);
+// });
 
 exports.createFilterObj = (req, res, next) => {
   // if nested route

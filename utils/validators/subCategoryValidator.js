@@ -14,7 +14,12 @@ exports.createSubCategoryValidator = [
     .isLength({ min: 3 })
     .withMessage("minimun length ust be 3 characters")
     .isLength({ max: 32 })
-    .withMessage("maximum length ust be 32 characters"),
+    .withMessage("maximum length ust be 32 characters")
+    .custom((val, { req }) => {
+        req.body.slug = slugify(val);
+        return true;
+      })
+    ,
   check("category")
     .notEmpty()
     .withMessage("category is required")

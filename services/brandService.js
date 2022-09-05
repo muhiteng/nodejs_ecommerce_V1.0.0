@@ -48,11 +48,18 @@ exports.getBrand = asyncHandler(async (req, res, next) => {
 // @des create new brand
 // @route  POST api/v1/brands
 // @access private
-exports.createBrand = asyncHandler(async (req, res) => {
-  const name = req.body.name;
-  const brand = await brandModel.create({ name, slug: slugify(name) });
-  res.status(201).send(brand);
-});
+exports.createBrand = factory.createOne(brandModel);
+// exports.createBrand = asyncHandler(async (req, res) => {
+
+//   const brand = await brandModel.create(req.body);
+//   res.status(201).send(brand);
+// });
+
+// exports.createBrand = asyncHandler(async (req, res) => {
+//   const name = req.body.name;
+//   const brand = await brandModel.create({ name, slug: slugify(name) });
+//   res.status(201).send(brand);
+// });
 
 // @des post  update brand
 // @route  POST api/v1/brands/:id
