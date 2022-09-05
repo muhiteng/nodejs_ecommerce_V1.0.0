@@ -37,32 +37,33 @@ exports.createFilterObj = (req, res, next) => {
 // @des get all subCategories
 // @route  GET api/v1/subcategories
 // @access public
-exports.getSubCategories = asyncHandler(async (req, res) => {
-  // get total number of brands
-  const documentsCounts = await subCategoryModel.countDocuments();
+exports.getSubCategories = factory.getAll(subCategoryModel);
+// exports.getSubCategories = asyncHandler(async (req, res) => {
+//   // get total number of brands
+//   const documentsCounts = await subCategoryModel.countDocuments();
 
-  //Build query
-  const apiFeatures = new ApiFeatures(subCategoryModel.find(), req.query)
-    .paginate(documentsCounts)
-    .filter()
-    .search()
-    .limitFields()
-    .sort();
+//   //Build query
+//   const apiFeatures = new ApiFeatures(subCategoryModel.find(), req.query)
+//     .paginate(documentsCounts)
+//     .filter()
+//     .search()
+//     .limitFields()
+//     .sort();
 
-  //execute query
-  const { mongooseQuery, paginationResult } = apiFeatures;
-  // const products = await apiFeatures.mongooseQuery;
+//   //execute query
+//   const { mongooseQuery, paginationResult } = apiFeatures;
+//   // const products = await apiFeatures.mongooseQuery;
 
-  const subCategories = await mongooseQuery.populate({
-    path: "category",
-    select: "name -_id",
-  }); // return only name  , -_id to remove id
-  res.status(200).json({
-    results: subCategories.length,
-    paginationResult,
-    data: subCategories,
-  });
-});
+//   const subCategories = await mongooseQuery.populate({
+//     path: "category",
+//     select: "name -_id",
+//   }); // return only name  , -_id to remove id
+//   res.status(200).json({
+//     results: subCategories.length,
+//     paginationResult,
+//     data: subCategories,
+//   });
+// });
 
 // @des get  category by id
 // @route  GET api/v1/categories/:id

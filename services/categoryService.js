@@ -8,28 +8,29 @@ const factory = require("./handlersFactory");
 // @des get all categories
 // @route  GET api/v1/categories
 // @access public
-exports.getCategories = asyncHandler(async (req, res) => {
-  // get total number of brands
-  const documentsCounts = await CategoryModel.countDocuments();
+exports.getCategories = factory.getAll(CategoryModel);
+// exports.getCategories = asyncHandler(async (req, res) => {
+//   // get total number of brands
+//   const documentsCounts = await CategoryModel.countDocuments();
 
-  //Build query
-  const apiFeatures = new ApiFeatures(CategoryModel.find(), req.query)
-    .paginate(documentsCounts)
-    .filter()
-    .search()
-    .limitFields()
-    .sort();
+//   //Build query
+//   const apiFeatures = new ApiFeatures(CategoryModel.find(), req.query)
+//     .paginate(documentsCounts)
+//     .filter()
+//     .search()
+//     .limitFields()
+//     .sort();
 
-  //execute query
-  const { mongooseQuery, paginationResult } = apiFeatures;
-  // const products = await apiFeatures.mongooseQuery;
+//   //execute query
+//   const { mongooseQuery, paginationResult } = apiFeatures;
+//   // const products = await apiFeatures.mongooseQuery;
 
-  const categories = await mongooseQuery;
+//   const categories = await mongooseQuery;
 
-  res
-    .status(200)
-    .json({ results: categories.length, paginationResult, data: categories });
-});
+//   res
+//     .status(200)
+//     .json({ results: categories.length, paginationResult, data: categories });
+// });
 
 // @des get  category by id
 // @route  GET api/v1/categories/:id

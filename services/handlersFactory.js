@@ -45,3 +45,32 @@ exports.getOne = (Model) =>
 
     res.status(200).json({ data: document });
   });
+
+exports.getAll = (Model, modeName = "") =>
+  asyncHandler(async (req, res) => {
+    // for nested routes in subCategories
+    let filter = {};
+    if (req.filterObj) {
+      filter = req.filterObj;
+    }
+    // get total number of brands
+    const documentsCounts = await Model.countDocuments();
+
+    //Build query
+    const apiFeatures = new ApiFeatures(Model.find(filter), req.query)
+      .paginate(documentsCounts)
+      .filter()
+      .search(modeName)
+      .limitFields()
+      .sort();
+
+    //execute query
+    const { mongooseQuery, paginationResult } = apiFeatures;
+    // const products = await apiFeatures.mongooseQuery;
+
+    const documents = await mongooseQuery;
+
+    res
+      .status(200)
+      .json({ results: documents.length, paginationResult, data: documents });
+  });
