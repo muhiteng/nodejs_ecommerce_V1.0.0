@@ -62,6 +62,7 @@ exports.getAll = (Model, modeName = "") =>
       .filter()
       .search(modeName)
       .limitFields()
+      0
       .sort();
 
     //execute query
