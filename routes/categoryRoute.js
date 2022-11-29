@@ -7,6 +7,7 @@ const {
   updateCategory,
   deleteCategory,
   uploadCategoryImage,
+  resizeImage,
 } = require("../services/categoryService");
 const {
   getCategoryValidator,
@@ -26,7 +27,12 @@ router.use("/:categoryId/subCategories", subCategoryRoute);
 router
   .route("/")
   .get(getCategories)
-  .post(uploadCategoryImage, createCategoryValidator, createCategory);
+  .post(
+    uploadCategoryImage,
+    resizeImage,
+    createCategoryValidator,
+    createCategory
+  );
 
 // //without validation
 // router.route('/:id')

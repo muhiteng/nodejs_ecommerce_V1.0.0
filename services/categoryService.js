@@ -1,4 +1,5 @@
 const multer = require("multer");
+const sharp = require("sharp");
 const { v4: uuidv4 } = require("uuid");
 const slugify = require("slugify");
 const asyncHandler = require("express-async-handler");
@@ -6,34 +7,48 @@ const CategoryModel = require("../models/categoryModel");
 const ApiError = require("../utils/apiError");
 const ApiFeatures = require("../utils/apiFeatures");
 const factory = require("./handlersFactory");
+const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
+// // 1 - disk Storage
+// const multerStorage = multer.diskStorage({
+//   // cb is callback function
+//   destination: function (req, file, cb) {
+//     // null means no errors
+//     cb(null, "uploads/categories");
+//   },
+//   filename: function (req, file, cb) {
+//     const ext = file.mimetype.split("/")[1];
+//     const fileName = `category-${uuidv4()}-${Date.now()}.${ext}`;
 
-// disk Storage
-const multerStorage = multer.diskStorage({
-  // cb is callback function
-  destination: function (req, file, cb) {
-    // null means no errors
-    cb(null, "uploads/categories");
-  },
-  filename: function (req, file, cb) {
-    const ext = file.mimetype.split("/")[1];
-    const fileName = `category-${uuidv4()}-${Date.now()}.${ext}`;
+//     cb(null, fileName);
+//   },
+// });
 
-    cb(null, fileName);
-  },
+// // check image type is image/*
+// const multerFilter = function (req, file, cb) {
+//   if (file.mimetype.startsWith("image")) {
+//     cb(null, true);
+//   } else {
+//     cb(new ApiError("only image allowed", 400), false);
+//   }
+// };
+// Upload single image
+exports.uploadCategoryImage = uploadSingleImage('image');
+
+// Image processing
+exports.resizeImage = asyncHandler(async (req, res, next) => {
+  const filename = `category-${uuidv4()}-${Date.now()}.jpeg`;
+
+  await sharp(req.file.buffer)
+    .resize(600, 600)
+    .toFormat("jpeg")
+    .jpeg({ quality: 95 })
+    .toFile(`uploads/categories/${filename}`);
+
+  // Save image into our db
+  req.body.image = filename;
+
+  next();
 });
-// check image type is image/*
-const multerFilter = function (req, file, cb) {
-  if (file.mimetype.startsWith("image")) {
-    cb(null, true);
-  } else {
-    cb(new ApiError("only image allowed", 400), false);
-  }
-};
-
-const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
-
-// upload single image
-exports.uploadCategoryImage = upload.single("image");
 
 // @des get all categories
 // @route  GET api/v1/categories
