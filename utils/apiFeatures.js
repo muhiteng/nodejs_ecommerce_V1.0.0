@@ -3,6 +3,7 @@ class ApiFeatures {
     this.mongooseQuery = mongooseQuery;
     this.queryString = queryString;
   }
+
   filter() {
     //1) filtering
     //ex: http://localhost:4000/api/v1/products?ratingsAverage=4.4
@@ -28,6 +29,7 @@ class ApiFeatures {
     // return the object to use another method
     return this;
   }
+
   sort() {
     //3) sorting
     // ex: http://localhost:4000/api/v1/products?sort=-price,sold
@@ -47,6 +49,7 @@ class ApiFeatures {
     // return the object to use another method
     return this;
   }
+
   limitFields() {
     //4) fields limiting
     // return only title,image,price ex:  http://localhost:4000/api/v1/products?fields=title,image,price
@@ -64,6 +67,7 @@ class ApiFeatures {
     // return the object to use another method
     return this;
   }
+
   search(modelName) {
     // 5) search
     if (this.queryString.keyword) {
@@ -83,6 +87,7 @@ class ApiFeatures {
     // return the object to use another method
     return this;
   }
+
   paginate(countDocuments) {
     //2) paggination
     const page = this.queryString.page * 1 || 1;
@@ -92,6 +97,7 @@ class ApiFeatures {
 
     // pagination result;
     let pagination = {};
+
     pagination.currentPage = page;
     pagination.limit = limit;
     pagination.numberOfPages = Math.ceil(countDocuments / limit);

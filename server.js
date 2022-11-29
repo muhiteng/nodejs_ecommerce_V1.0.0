@@ -1,7 +1,8 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
-const apiError = require("./utils/apiError");
+const ApiError=require("./utils/apiError");
+
 dotenv.config({ path: "config.env" });
 const dbConnection = require("./config/database");
 //routes
@@ -35,7 +36,7 @@ app.use("/api/v1/products", productRoute);
 app.all("*", (req, res, next) => {
   // const err=new Error(`rout not found : ${req.originalUrl}`);
   // next(err.message);
-  next(new apiError(`rout not found : ${req.originalUrl}`, 401));
+  next(new ApiError(`rout not found : ${req.originalUrl}`, 401));
 });
 // Global error handling middleware ,
 // when there is 4 parameters express know error middleware

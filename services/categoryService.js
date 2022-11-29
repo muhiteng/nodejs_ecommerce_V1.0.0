@@ -1,9 +1,39 @@
+const multer = require("multer");
+const { v4: uuidv4 } = require("uuid");
 const slugify = require("slugify");
 const asyncHandler = require("express-async-handler");
 const CategoryModel = require("../models/categoryModel");
-const apiError = require("../utils/apiError");
+const ApiError = require("../utils/apiError");
 const ApiFeatures = require("../utils/apiFeatures");
 const factory = require("./handlersFactory");
+
+// disk Storage
+const multerStorage = multer.diskStorage({
+  // cb is callback function
+  destination: function (req, file, cb) {
+    // null means no errors
+    cb(null, "uploads/categories");
+  },
+  filename: function (req, file, cb) {
+    const ext = file.mimetype.split("/")[1];
+    const fileName = `category-${uuidv4()}-${Date.now()}.${ext}`;
+
+    cb(null, fileName);
+  },
+});
+// check image type is image/*
+const multerFilter = function (req, file, cb) {
+  if (file.mimetype.startsWith("image")) {
+    cb(null, true);
+  } else {
+    cb(new ApiError("only image allowed", 400), false);
+  }
+};
+
+const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
+
+// upload single image
+exports.uploadCategoryImage = upload.single("image");
 
 // @des get all categories
 // @route  GET api/v1/categories

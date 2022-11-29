@@ -119,4 +119,4 @@ exports.deleteSubCategory = factory.deleteOne(subCategoryModel);
 //   }
 
 //   res.status(204).send();
-// });
+// }); 

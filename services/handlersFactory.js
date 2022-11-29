@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const apiError = require("../utils/apiError");
+const ApiError = require("../utils/apiError");
 const ApiFeatures = require("../utils/apiFeatures");
 
 exports.deleteOne = (Model) =>
@@ -9,7 +9,7 @@ exports.deleteOne = (Model) =>
     const document = await Model.findByIdAndDelete(id);
     if (!document) {
       // res.status(404).json({message:`No brand for this id :${id}`});
-      return next(new apiError(`No brand for this id :${id}`, 404));
+      return next(new ApiError(`No brand for this id :${id}`, 404));
     }
 
     res.status(204).send();
@@ -17,13 +17,13 @@ exports.deleteOne = (Model) =>
 
 exports.updateOne = (Model) =>
   asyncHandler(async (req, res, next) => {
-    const { name } = req.body;
+    //const { name } = req.body;
 
     const document = await Model.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     }); // new to return brand after update);
     if (!document) {
-      return next(new apiError(`No result for this id :${id}`, 404));
+      return next(new ApiError(`No result for this id :${id}`, 404));
     }
 
     res.status(200).json({ data: document });
@@ -40,7 +40,7 @@ exports.getOne = (Model) =>
     const { id } = req.params; //or const {id}=req.params;
     const document = await Model.findById(id);
     if (!document) {
-      return next(new apiError(`No document for this id :${id}`, 404));
+      return next(new ApiError(`No document for this id :${id}`, 404));
     }
 
     res.status(200).json({ data: document });
@@ -61,9 +61,8 @@ exports.getAll = (Model, modeName = "") =>
       .paginate(documentsCounts)
       .filter()
       .search(modeName)
-      .limitFields()
-      0
-      .sort();
+      .limitFields();
+    (0).sort();
 
     //execute query
     const { mongooseQuery, paginationResult } = apiFeatures;

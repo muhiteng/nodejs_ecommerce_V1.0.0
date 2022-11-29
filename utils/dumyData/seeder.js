@@ -37,7 +37,7 @@ const destroyData = async () => {
   }
 };
 
-// node seeder.js -d
+// node seeder.js -i     // 0 node  1 seeder.js  2  -i  // here argv consists of all instruction
 if (process.argv[2] === "-i") {
   insertData();
 } else if (process.argv[2] === "-d") {
