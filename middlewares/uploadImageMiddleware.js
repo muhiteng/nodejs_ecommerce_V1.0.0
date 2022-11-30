@@ -18,3 +18,7 @@ const multerOptions = () => {
 };
 
 exports.uploadSingleImage = (fieldName) => multerOptions().single(fieldName);
+
+// fileds to mix between single image or multi images
+exports.uploadMixOfImages = (arrayOfFields) =>
+  multerOptions().fields(arrayOfFields);

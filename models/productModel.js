@@ -77,6 +77,39 @@ productSchema.pre(/^find/, function (next) {
   });
   next();
 });
+// Mongoose query middleware
+productSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "category",
+    select: "name -_id",
+  });
+  next();
+});
+
+const setImageURL = (doc) => {
+  if (doc.imageCover) {
+    const imageUrl = `${process.env.BASE_URL}/products/${doc.imageCover}`;
+    doc.imageCover = imageUrl;
+  }
+  if (doc.images) {
+    const imagesList = [];
+    doc.images.forEach((image) => {
+      const imageUrl = `${process.env.BASE_URL}/products/${image}`;
+      imagesList.push(imageUrl);
+    });
+    doc.images = imagesList;
+  }
+};
+// findOne, findAll and update
+productSchema.post("init", (doc) => {
+  setImageURL(doc);
+});
+
+// create
+productSchema.post("save", (doc) => {
+  setImageURL(doc);
+});
+
 // 2- Create model
 const productModel = mongoose.model("Product", productSchema);
 

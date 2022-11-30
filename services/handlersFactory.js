@@ -23,7 +23,7 @@ exports.updateOne = (Model) =>
       new: true,
     }); // new to return brand after update);
     if (!document) {
-      return next(new ApiError(`No result for this id :${id}`, 404));
+      return next(new ApiError(`No result for this document`, 404));
     }
 
     res.status(200).json({ data: document });
