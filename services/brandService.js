@@ -1,9 +1,31 @@
-const slugify = require("slugify");
 const asyncHandler = require("express-async-handler");
-const brandModel = require("../models/brandModel");
-const apiError = require("../utils/apiError");
-const ApiFeatures = require("../utils/apiFeatures");
+const sharp = require("sharp");
+const { v4: uuidv4 } = require("uuid");
+
 const factory = require("./handlersFactory");
+const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
+
+const brandModel = require("../models/brandModel");
+// Upload single image
+// image is the name of the field by request sended from client
+exports.uploadBrandImage = uploadSingleImage("image");
+
+// Image processing
+exports.resizeImage = asyncHandler(async (req, res, next) => {
+  const filename = `brand-${uuidv4()}-${Date.now()}.jpeg`;
+
+  // here sometimes we must create the floder upload/brands manually
+  await sharp(req.file.buffer)
+    .resize(600, 600)
+    .toFormat("jpeg")
+    .jpeg({ quality: 95 })
+    .toFile(`uploads/brands/${filename}`);
+
+  // Save image into our db
+  req.body.image = filename;
+
+  next();
+});
 
 // @des get all brands
 // @route  GET api/v1/brands

@@ -1,13 +1,13 @@
-const multer = require("multer");
 const sharp = require("sharp");
 const { v4: uuidv4 } = require("uuid");
-const slugify = require("slugify");
+
 const asyncHandler = require("express-async-handler");
-const CategoryModel = require("../models/categoryModel");
-const ApiError = require("../utils/apiError");
-const ApiFeatures = require("../utils/apiFeatures");
+
 const factory = require("./handlersFactory");
 const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
+
+const CategoryModel = require("../models/categoryModel");
+
 // // 1 - disk Storage
 // const multerStorage = multer.diskStorage({
 //   // cb is callback function
@@ -31,13 +31,16 @@ const { uploadSingleImage } = require("../middlewares/uploadImageMiddleware");
 //     cb(new ApiError("only image allowed", 400), false);
 //   }
 // };
+
 // Upload single image
-exports.uploadCategoryImage = uploadSingleImage('image');
+// image is the name of the field by request sended from client
+exports.uploadCategoryImage = uploadSingleImage("image");
 
 // Image processing
 exports.resizeImage = asyncHandler(async (req, res, next) => {
   const filename = `category-${uuidv4()}-${Date.now()}.jpeg`;
 
+  // here sometimes we must create the floder upload/categories manually
   await sharp(req.file.buffer)
     .resize(600, 600)
     .toFormat("jpeg")

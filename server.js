@@ -1,7 +1,9 @@
+const path = require("path");
+
 const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
-const ApiError=require("./utils/apiError");
+const ApiError = require("./utils/apiError");
 
 dotenv.config({ path: "config.env" });
 const dbConnection = require("./config/database");
@@ -21,6 +23,8 @@ const app = express();
 
 // Middlewares
 app.use(express.json());
+// to enable access to images by link as:http://localhost:3000/categories/category-3.jpeg
+app.use(express.static(path.join(__dirname, "uploads")));
 
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
