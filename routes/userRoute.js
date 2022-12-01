@@ -5,6 +5,7 @@ const {
   createUserValidator,
   updateUserValidator,
   deleteUserValidator,
+  changeUserPasswordValidator,
 } = require("../utils/validators/userValidator");
 
 const {
@@ -15,9 +16,16 @@ const {
   deleteUser,
   uploadUserImage,
   resizeImage,
+  changeUserPassword,
 } = require("../services/userService");
 
 const router = express.Router();
+
+router.put(
+  "/changePassword/:id",
+  changeUserPasswordValidator,
+  changeUserPassword
+);
 
 router
   .route("/")
