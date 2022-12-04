@@ -155,7 +155,8 @@ exports.getProducts = factory.getAll(productModel, "Products");
 // @des get  product by id
 // @route  GET api/v1/products/:id
 // @access public
-exports.getProduct = factory.getOne(productModel);
+
+exports.getProduct = factory.getOne(productModel, 'reviews');
 // exports.getProduct = asyncHandler(async (req, res, next) => {
 //   const { id } = req.params; //or const {id}=req.params;
 //   const product = await productModel.findById(id);
