@@ -23,6 +23,9 @@ const globalError = require("./middlewares/errorMiddleware");
 // Connect with db
 dbConnection();
 
+// Routes
+const mountRoutes = require("./routes");
+
 //
 const app = express();
 
@@ -37,15 +40,7 @@ if (process.env.NODE_ENV === "development") {
 }
 
 // Mount Routes
-app.use("/api/v1/categories", categoryRoute);
-app.use("/api/v1/subcategories", subCategoryRoute);
-app.use("/api/v1/brands", brandRoute);
-app.use("/api/v1/products", productRoute);
-app.use("/api/v1/users", userRoute);
-app.use("/api/v1/auth", authRoute);
-app.use("/api/v1/reviews", reviewRoute);
-app.use("/api/v1/wishlist", wishlistRoute);
-app.use("/api/v1/addresses", addressRoute);
+mountRoutes(app);
 
 app.all("*", (req, res, next) => {
   // const err=new Error(`rout not found : ${req.originalUrl}`);
