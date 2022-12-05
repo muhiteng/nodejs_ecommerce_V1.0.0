@@ -1,7 +1,7 @@
 const factory = require('./handlersFactory');
 const Review = require('../models/reviewModel');
 
-// Nested route
+// for Nested route
 // GET /api/v1/products/:productId/reviews
 exports.createFilterObj = (req, res, next) => {
   let filterObject = {};

@@ -27,7 +27,7 @@ router
   .post(
     authService.protect,
     authService.allowedTo("user"),
-    setProductIdAndUserIdToBody,
+    setProductIdAndUserIdToBody, 
     createReviewValidator,
     createReview
   );
