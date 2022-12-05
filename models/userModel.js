@@ -45,7 +45,18 @@ const userSchema = new mongoose.Schema(
         type: mongoose.Schema.ObjectId,
         ref: "Product",
       },
-    ], 
+    ],
+    addresses: [
+      {
+        // to autogenerate Ids
+        id: { type: mongoose.Schema.Types.ObjectId },
+        alias: String,
+        details: String,
+        phone: String,
+        city: String,
+        postalCode: String,
+      },
+    ],
   },
   { timestamps: true }
 );
