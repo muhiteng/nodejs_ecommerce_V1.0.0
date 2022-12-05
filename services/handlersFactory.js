@@ -11,6 +11,8 @@ exports.deleteOne = (Model) =>
       // res.status(404).json({message:`No brand for this id :${id}`});
       return next(new ApiError(`No brand for this id :${id}`, 404));
     }
+    // Trigger "remove" event when update document
+    document.remove();
 
     res.status(204).send();
   });
@@ -25,6 +27,8 @@ exports.updateOne = (Model) =>
     if (!document) {
       return next(new ApiError(`No result for this document`, 404));
     }
+    // Trigger "save" event when update document to calcutate ratingsAverage
+    document.save();
 
     res.status(200).json({ data: document });
   });
@@ -35,7 +39,7 @@ exports.createOne = (Model) =>
     res.status(201).send(document);
   });
 
-  exports.getOne = (Model, populationOpt) =>
+exports.getOne = (Model, populationOpt) =>
   asyncHandler(async (req, res, next) => {
     const { id } = req.params;
     // 1) Build query here not use await to build
