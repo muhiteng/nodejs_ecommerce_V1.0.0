@@ -3,20 +3,14 @@ const path = require("path");
 const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
+const cors = require("cors");
+const compression = require("compression");
+
 const ApiError = require("./utils/apiError");
 
 dotenv.config({ path: "config.env" });
 const dbConnection = require("./config/database");
-//routes
-const categoryRoute = require("./routes/categoryRoute");
-const subCategoryRoute = require("./routes/subCategoryRoute");
-const brandRoute = require("./routes/brandRoute");
-const productRoute = require("./routes/productRoute");
-const userRoute = require("./routes/userRoute");
-const authRoute = require("./routes/authRoute");
-const reviewRoute = require("./routes/reviewRoute");
-const wishlistRoute = require("./routes/wishlistRoute");
-const addressRoute = require("./routes/addressRoute");
+
 //error
 const globalError = require("./middlewares/errorMiddleware");
 
@@ -25,9 +19,24 @@ dbConnection();
 
 // Routes
 const mountRoutes = require("./routes");
+const { webhookCheckout } = require("./services/orderService");
 
 //
 const app = express();
+
+// Enable other domains to access your application
+app.use(cors());
+app.options("*", cors());
+
+// compress all responses
+app.use(compression());
+
+// Checkout webhook
+app.post(
+  "/webhook-checkout",
+  express.raw({ type: "application/json" }),
+  webhookCheckout
+);
 
 // Middlewares
 app.use(express.json());
