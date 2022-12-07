@@ -6,7 +6,8 @@ const morgan = require("morgan");
 const cors = require("cors");
 const compression = require("compression");
 const hpp = require("hpp");
-
+const mongoSanitize = require("express-mongo-sanitize");
+const xss = require("xss-clean");
 const ApiError = require("./utils/apiError");
 
 dotenv.config({ path: "config.env" });
@@ -41,6 +42,12 @@ app.post(
 
 //  Apply the rate limiting middleware to all requests
 app.use(express.json({ limit: "20kb" }));
+
+// To remove data nosql injection like mongo query by $
+app.use(mongoSanitize());
+
+// xss to remove <script></script>
+app.use(xss());
 
 // Middleware to protect against HTTP Parameter Pollution attacks
 app.use(
