@@ -39,7 +39,7 @@ app.post(
 );
 
 // Middlewares
-app.use(express.json());
+app.use(express.json({ limit: "20kb" }));
 // to enable access to images by link as:http://localhost:3000/categories/category-3.jpeg
 app.use(express.static(path.join(__dirname, "uploads")));
 
