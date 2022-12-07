@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 const morgan = require("morgan");
 const cors = require("cors");
 const compression = require("compression");
+const hpp = require("hpp");
 
 const ApiError = require("./utils/apiError");
 
@@ -38,8 +39,23 @@ app.post(
   webhookCheckout
 );
 
-// Middlewares
+//  Apply the rate limiting middleware to all requests
 app.use(express.json({ limit: "20kb" }));
+
+// Middleware to protect against HTTP Parameter Pollution attacks
+app.use(
+  hpp({
+    // may be repeated so this middleware will let it repeated
+    whitelist: [
+      "price",
+      "sold",
+      "quantity",
+      "ratingsAverage",
+      "ratingsQuantity",
+    ],
+  })
+);
+
 // to enable access to images by link as:http://localhost:3000/categories/category-3.jpeg
 app.use(express.static(path.join(__dirname, "uploads")));
 
